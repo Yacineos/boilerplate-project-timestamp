@@ -3,6 +3,7 @@
 
 // init project
 var express = require("express");
+require("dotenv").config();
 var app = express();
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
@@ -32,7 +33,7 @@ app.get("/api/:dateOrTimeStamp", (req, res) => {
 
       var resToSend = {unix: unixNum, utc: utcDate };
       res.json(resToSend);
-      
+
     } else {
       const timestamp = parseInt(dateOrTimeStamp)
       if (timestamp >= 0 && timestamp <= Date.now()) {       
@@ -59,6 +60,6 @@ app.get("/api/hello", function (req, res) {
 });
 
 // listen for requests :)
-var listener = app.listen(3000, function () {
-  console.log("Your app is listening on port 3000");
+var listener = app.listen(process.env.PORT, function () {
+  console.log("Your app is listening on port ",process.env.PORT);
 });
