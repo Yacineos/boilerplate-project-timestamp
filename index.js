@@ -24,23 +24,34 @@ function dateIsValid(date) {
 
 app.get("/api/:dateOrTimeStamp", (req, res) => {
   const { dateOrTimeStamp } = req.params;
-  if ((dateOrTimeStamp == "")) {
-    var resToSend = {unix: Date.now(), utc: Date.getUTCDate()}
-    res.json(resToSend);
-  } else {
+  
+  
     if (dateIsValid(dateOrTimeStamp)) {
-      var resToSend = {unix: dateOrTimeStamp.getTime(), utc: dateOrTimeStamp.toUTCString()};
+      const utcDate = new Date(dateOrTimeStamp).toUTCString() 
+      console.log(utcDate)
+      var resToSend = {unix: new Date(dateOrTimeStamp).getTime(), utc: utcDate };
       res.json(resToSend);
     } else {
-      if (dateOrTimeStamp > 0 && dateOrTimeStamp < Date.now()) {
-        var resToSend = {unix: dateOrTimeStamp, utc: dateOrTimeStamp.toUTCString()};
+      
+      const timestamp = parseInt(dateOrTimeStamp)
+      if (timestamp >= 0 && timestamp <= Date.now()) {       
+              
+        var resToSend = {unix: dateOrTimeStamp, utc: new Date(timestamp).toUTCString()};
         res.json(resToSend);
       } else {
         res.status(400).json({ error: "Invalid Date" });
       }
     }
-  }
+  
 });
+
+app.get("/api/",(req, res)=>{
+ 
+    var resToSend = {unix: Date.now(), utc: new Date().toUTCString()}
+    res.json(resToSend);
+    
+  
+})
 
 // your first API endpoint...
 app.get("/api/hello", function (req, res) {
@@ -48,6 +59,6 @@ app.get("/api/hello", function (req, res) {
 });
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
+var listener = app.listen(3000, function () {
+  console.log("Your app is listening on port 3000");
 });
