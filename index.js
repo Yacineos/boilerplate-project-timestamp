@@ -18,29 +18,29 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + "/views/index.html");
 });
 
-function dateIsValid(date) {
-  return date instanceof Date && !isNaN(date);
-}
 
 app.get("/api/:dateOrTimeStamp", (req, res) => {
   const { dateOrTimeStamp } = req.params;
   
   
-    if (dateIsValid(dateOrTimeStamp)) {
+    if (isNaN(dateOrTimeStamp)) {
       const utcDate = new Date(dateOrTimeStamp).toUTCString() 
-      console.log(utcDate)
-      var resToSend = {unix: new Date(dateOrTimeStamp).getTime(), utc: utcDate };
+      const unixNum = parseInt(new Date(dateOrTimeStamp).getTime());
+      if(!unixNum){
+       return res.json({ error: "Invalid Date" });
+      }
+
+      var resToSend = {unix: unixNum, utc: utcDate };
       res.json(resToSend);
-    } else {
       
+    } else {
       const timestamp = parseInt(dateOrTimeStamp)
       if (timestamp >= 0 && timestamp <= Date.now()) {       
-              
-        var resToSend = {unix: dateOrTimeStamp, utc: new Date(timestamp).toUTCString()};
+        
+        var resToSend = {unix: timestamp, utc: new Date(timestamp).toUTCString()};
         res.json(resToSend);
-      } else {
-        res.status(400).json({ error: "Invalid Date" });
       }
+    
     }
   
 });
